@@ -39,7 +39,8 @@ public class SnippetService {
             ApiResponse apiResponse = modelMapper.map(mSnippetModel, ApiResponse.class);
             apiResponse.setExpiresAt(mSnippetModel.getExpiryDate());
 //            apiResponse.setUrl("http://localhost:8089/snippet/"+mSnippetModel.getName());
-            apiResponse.setUrl(httpServletRequest.getScheme()+"://"+httpServletRequest.getServerName()+":8089"+"/snippet/"+mSnippetModel.getName());
+//            apiResponse.setUrl(httpServletRequest.getScheme()+"://"+httpServletRequest.getServerName()+":8089"+"/snippet/"+mSnippetModel.getName());
+            apiResponse.setUrl(httpServletRequest.getScheme()+"://"+httpServletRequest.getServerName()+"/snippet/"+mSnippetModel.getName());
             return apiResponse;
         } catch (Exception e) {
             throw new CustomException(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
