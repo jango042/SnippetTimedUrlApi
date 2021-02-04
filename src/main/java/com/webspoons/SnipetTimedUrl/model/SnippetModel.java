@@ -16,6 +16,7 @@ public class SnippetModel {
     private LocalDateTime expiryDate;
     private String snippet;
     private boolean valid;
+    private String url;
 
     public void setExpiryDate(int seconds) {
         LocalDateTime localDateTime = LocalDateTime.now();

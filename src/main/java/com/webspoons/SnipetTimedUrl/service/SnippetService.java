@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @Service
@@ -25,7 +26,7 @@ public class SnippetService {
     }
 
 
-    public ApiResponse create(SnippetRequest snippetRequest) {
+    public ApiResponse create(SnippetRequest snippetRequest, HttpServletRequest httpServletRequest) {
         try {
             Optional<SnippetModel> mSnippetModel1 = snippetRepo.findByName(snippetRequest.getName());
             if (mSnippetModel1.isPresent()){
@@ -33,10 +34,12 @@ public class SnippetService {
             }
             SnippetModel snippetModel = modelMapper.map(snippetRequest, SnippetModel.class);
             snippetModel.setExpiryDate(snippetRequest.getExpiryDate());
+            snippetModel.setUrl(httpServletRequest.getScheme()+"://"+httpServletRequest.getServerName()+"/snippet/"+snippetModel.getName());
             SnippetModel mSnippetModel = snippetRepo.save(snippetModel);
             ApiResponse apiResponse = modelMapper.map(mSnippetModel, ApiResponse.class);
             apiResponse.setExpiresAt(mSnippetModel.getExpiryDate());
-            apiResponse.setUrl("http://localhost:8089/snippet/"+mSnippetModel.getName());
+//            apiResponse.setUrl("http://localhost:8089/snippet/"+mSnippetModel.getName());
+            apiResponse.setUrl(httpServletRequest.getScheme()+"://"+httpServletRequest.getServerName()+":8089"+"/snippet/"+mSnippetModel.getName());
             return apiResponse;
         } catch (Exception e) {
             throw new CustomException(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
@@ -52,7 +55,7 @@ public class SnippetService {
                     snippetModel.get().setExpiryDate(30);
                     SnippetModel updatedSnippet = snippetRepo.save(snippetModel.get());
                     ApiResponse apiResponse = modelMapper.map(updatedSnippet, ApiResponse.class);
-                    apiResponse.setUrl("http://localhost:8089/snippet/"+snippetModel.get().getName());
+                    apiResponse.setUrl(updatedSnippet.getUrl());
                     apiResponse.setExpiresAt(updatedSnippet.getExpiryDate());
                     return apiResponse;
                 } else {
@@ -78,7 +81,7 @@ public class SnippetService {
                 SnippetModel mSnippetModel = snippetRepo.save(snippetModel1.get());
                 ApiResponse apiResponse = modelMapper.map(mSnippetModel, ApiResponse.class);
                 apiResponse.setExpiresAt(mSnippetModel.getExpiryDate());
-                apiResponse.setUrl("http://localhost:8089/snippet/"+mSnippetModel.getName());
+                apiResponse.setUrl(mSnippetModel.getUrl());
                 return apiResponse;
             } else {
                 throw new CustomException("Not found", HttpStatus.NOT_FOUND);

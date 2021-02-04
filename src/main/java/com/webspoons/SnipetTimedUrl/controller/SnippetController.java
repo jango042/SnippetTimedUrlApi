@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @RestController
@@ -20,9 +21,9 @@ public class SnippetController {
 
     //Create Snippet Api
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse> createSnippet(@RequestBody SnippetRequest snippetRequest) {
+    public ResponseEntity<ApiResponse> createSnippet(@RequestBody SnippetRequest snippetRequest, HttpServletRequest httpServletRequest) {
 
-        return ResponseEntity.ok(snippetService.create(snippetRequest));
+        return ResponseEntity.ok(snippetService.create(snippetRequest, httpServletRequest));
     }
 
     @GetMapping("/{name}")
